@@ -1,2 +1,1 @@
-# ComandosDMLManipulacionDeDatosConMySQL
-Comandos DML Manipulación de datos con MySQL
+# Comandos DML Manipulación de datos con MySQL
