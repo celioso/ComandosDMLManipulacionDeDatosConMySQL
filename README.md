@@ -263,3 +263,322 @@ Lo que aprendimos en esta aula:
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-3/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-3.zip "aquí") para descargarlos directamente.
 
+### Haga lo que hicimos en aula
+
+Llegó la hora de que sigas todos los pasos realizados por mí durante esta aula. En caso de que ya lo hayas hecho, excelente. Si aún no lo hiciste, es importante que ejecutes lo que fue visto en los videos para poder continuar con la siguiente aula.
+
+1. Abre MySQL Workbench y crea un nuevo script de comandos SQL.
+
+2. Para crear una base de datos podemos usar el comando CREATE. Digita el siguiente comando para crear una nueva base de datos:
+
+```SQL
+CREATE DATABASE ventas_jugos;
+```
+3. Podemos emplear algunas propiedades para definir el tipo de tabla de caracteres que puede ser usada para almacenar los datos en la base. Digita el siguiente comando para crear una base que utilice la tabla de caracteres **UTF32**, Si hay dudas si existe o no la base de datos, podemos usar el comando `IF NOT EXISTS.`:
+
+```SQL
+CREATE SCHEMA IF NOT EXISTS ventas_jugos2 DEFAULT CHARSET utf32;
+```
+
+4. Podemos eliminar una base de datos existente. Para ello digita el comando:
+
+```SQL
+DROP DATABASE ventas_jugos2;
+```
+5. Doble clic sobre la base de datos ventas_jugos para que la misma quede seleccionada. El nombre de ella debe estar resaltado en negrilla.
+
+6. Crea un nuevo script de SQL y digita el comando:
+
+```SQL
+USE ventas_jugos;
+```
+
+Este comando forzará la selección de la base de datos `ventas_jugos`.
+
+7. Vamos a crear la primera tabla en nuestra base de datos. Digita ejecuta:
+
+```SQL
+CREATE TABLE tb_producto(
+CODIGO VARCHAR(10) NOT NULL,
+DESCRIPCION VARCHAR(100) NULL,
+SABOR VARCHAR(50) NULL,
+TAMANO VARCHAR(50) NULL,
+ENVASE VARCHAR(50) NULL,
+PRECIO_LISTA FLOAT NULL,
+PRIMARY KEY (CODIGO)
+);
+```
+8. Vamos a crear la segunda tabla (vendedores). Digita:
+
+```SQL
+CREATE TABLE tb_vendedor(
+MATRICULA VARCHAR(5) NOT NULL,
+NOMBRE VARCHAR(100) NULL,
+BARRIO VARCHAR(50) NULL,
+COMISION FLOAT NULL,
+FECHA_ADMISION DATE NULL,
+DE_VACACIONES BIT(1) NULL,
+PRIMARY KEY(MATRICULA)
+);
+```
+9. Haz clic con el botón derecho del mouse sobre Table y selecciona la opción Create Table.
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/02/15.png)
+
+10. Tenemos un cuadro de diálogo para crear una tabla a través de un asistente. Digita lo siguiente para crear la tabla de clientes y la tabla de items_facturas:
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/02/17.png)
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/02/16.png)
+
+11. Confirma la creación de las tablas anteriores haciendo clic sobre el botón apply.
+
+12. Vamos a crear una tabla adicional que es la tabla de ventas. Para ello, digita en un nuevo script:
+
+```SQL
+USE ventas_jugos;
+
+CREATE TABLE tb_venta(
+NUMERO VARCHAR(5) NOT NULL,
+FECHA DATE NULL,
+DNI VARCHAR(11) NOT NULL,
+MATRICULA VARCHAR(5) NOT NULL,
+IMPUESTO FLOAT,
+PRIMARY KEY(NUMERO)
+);
+```
+
+13. Podemos crear relaciones entre esta tabla y la tabla de clientes y vendedores. Para ello digita y ejecuta:
+
+```SQL
+ALTER TABLE tb_venta ADD CONSTRAINT FK_CLIENTE
+FOREIGN KEY (DNI) REFERENCES tb_cliente(DNI);
+
+ALTER TABLE tb_venta ADD CONSTRAINT FK_VENDEDOR
+FOREIGN KEY (MATRICULA) REFERENCES tb_vendedor(MATRICULA);
+```
+14. El nombre de la tabla también puede ser alterado tras la creación de la misma. Digita y ejecuta:
+
+```SQL
+USE ventas_jugos;
+ALTER TABLE tb_venta RENAME tb_factura;
+```
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Aprendimos a crear una base de datos;
+- Aprendimos a crear una tabla;
+- La posibilidad de crear las tablas por un asistente;
+- Vimos cómo crear las relaciones entre las tablas;
+- Vimos que el nombre de la tabla también puede ser modificado tras su creación.
+
+### Proyecto del aula anterior
+
+¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-3/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-3.zip "aquí") para descargarlos directamente.
+
+### Inclusión de registros en las tablas
+
+Incluye los siguientes registros en la tabla de clientes:
+
+DNI: 9283760794, NOMBRE: Edson Calisaya, DIRECCION: Sta Úrsula Xitla, BARRIO: Barrio del Niño Jesús, CIUDAD: Ciudad de México, ESTADO: EM, CP: 22002002, FECHA DE NACIMIENTO: 1995-01-07, EDAD: 25, SEXO: M, LIMITE DE CREDITO: 150000, VOLUMEN DE COMPRA: 250000, PRIMERA COMPRA: Sí.
+
+DNI: 7771579779, NOMBRE: Marcelo Perez, DIRECCION: F.C. de Cuernavaca 13, BARRIO: Carola, CIUDAD: Ciudad de México, ESTADO: EM, CP: 88202912, FECHA DE NACIMIENTO: 1992-01-25, EDAD: 29, SEXO: M, LIMITE DE CREDITO: 70000, VOLUMEN DE COMPRA: 160000, PRIMERA COMPRA: Sí.
+
+DNI: 5576228758, NOMBRE: Patricia Olivera, DIRECCION: Pachuca 75, BARRIO: Condesa, CIUDAD: Ciudad de México, ESTADO: EM, CP: 88192029, FECHA DE NACIMIENTO: 1995-01-14 , EDAD: 25, SEXO: F, LIMITE DE CREDITO: 70000, VOLUMEN DE COMPRA: 160000, PRIMERA COMPRA: Sí.
+
+```SQL
+INSERT INTO TABLA_DE_CLIENTES (DNI, NOMBRE, DIRECCION, BARRIO, CIUDAD, ESTADO, CP, FECHA_NACIMIENTO, EDAD, SEXO, LIMITE_CREDITO, VOLUMEN_COMPRA, PRIMERA_COMPRA) VALUES ('9283760794', 'Edson Calisaya', 'Sta Úrsula Xitla', 'Barrio del Niño Jesús', 'Ciudad de México', 'EM', '22002002', '1995-01-07', 25, 'M', 150000, 250000, 1);
+INSERT INTO TABLA_DE_CLIENTES (DNI, NOMBRE, DIRECCION, BARRIO, CIUDAD, ESTADO, CP, FECHA_NACIMIENTO, EDAD, SEXO, LIMITE_CREDITO, VOLUMEN_COMPRA, PRIMERA_COMPRA) VALUES ('7771579779', 'Marcelo Perez', 'F.C. de Cuernavaca 13', 'Carola', 'Ciudad de México', 'EM', '88202912', '1992-01-25', 29, 'M', 120000, 200000, 1);
+INSERT INTO TABLA_DE_CLIENTES (DNI, NOMBRE, DIRECCION, BARRIO, CIUDAD, ESTADO, CP, FECHA_NACIMIENTO, EDAD, SEXO, LIMITE_CREDITO, VOLUMEN_COMPRA, PRIMERA_COMPRA) VALUES ('5576228758', 'Patricia Olivera', 'Pachuca 75',  'Condesa', 'Ciudad de México', 'EM', '88192029', '1995-01-14', 25, 'F', 70000, 160000, 1);
+```
+
+### Inclusión de registros a partir de otra tabla
+
+Incluye todos los clientes en la tabla `tb_clientes` basado en los registros de la tabla `tabla_de_clientes` de la base `jugos_ventas`.
+
+Observación: Atención al nombre de los campos y recuerda que ya incluimos 3 clientes en nuestra tabla durante el ejercicio anterior.
+
+```SQL
+USE ventas_jugos;
+
+INSERT INTO tb_clientes
+SELECT DNI, NOMBRE, DIRECCION_1 AS DIRECCION,
+BARRIO, CIUDAD, ESTADO, CP, FECHA_DE_NACIMIENTO 
+AS FECHA_NACIMIENTO, EDAD, SEXO, LIMITE_DE_CREDITO
+AS LIMITE_CREDITO, VOLUMEN_DE_COMPRA AS VOLUMEN_COMPRA,
+PRIMERA_COMPRA FROM jugos_ventas.tabla_de_clientes
+WHERE DNI NOT IN (SELECT DNI FROM tb_clientes);
+```
+
+### Haga lo que hicimos en aula
+
+Llegó la hora de que sigas todos los pasos realizados por mí durante esta aula. En caso de que ya lo hayas hecho, excelente. Si aún no lo hiciste, es importante que ejecutes lo que fue visto en los videos para poder continuar con la siguiente aula.
+
+1. Vamos a crear un nuevo script SQL en Workbench.
+
+2. Ahora, vamos a insertar un nuevo producto. Digita:
+
+```SQL
+USE ventas_jugos;
+INSERT INTO tb_producto (CODIGO, DESCRIPCION, SABOR, TAMANO, ENVASE,
+PRECIO_LISTA) VALUES ('1040107', 'Light', 'Sandía', '350 ml', 'Lata', 4.56);
+```
+
+3. Debemos confirmar si el producto fue incluido en la tabla. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_producto;
+```
+
+4. En el script, podemos incluir un comando INSERT más. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_producto (CODIGO, SABOR, DESCRIPCION, TAMANO, ENVASE,
+PRECIO_LISTA) VALUES ('1040108', 'Guanábana', 'Light', '350 ml', 'Lata', 4.00);
+```
+
+5. Tambíén podemos, en un mismo comando, incluir más de un registro. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_producto VALUES 
+('1040109', 'Light', 'Asaí', '350 ml', 'Lata', 5.60), 
+('1040110', 'Light', 'Manzana', '350 ml', 'Lata', 6.00),
+('1040111', 'Light', 'Mango', '350 ml', 'Lata', 3.50);
+```
+
+6. Descarga el archivo adjunto `RecuperacionAmbiente.rar`.
+
+7. Descompacta el archivo.
+
+8. Selecciona la pestaña **Administration**, en el área Navigator.
+
+9. Selecciona el link **Data Import/Restore**.
+
+10. En la opción **Import From Dump Project Folder** escoge el directorio **DumpJugosVentas**.
+
+11. Haz clic sobre el botón **Start Import**.
+
+12. Verifica en la base `jugos_ventas` se las tablas fueron creadas.
+
+13. Podemos acceder a la base `jugos_ventas` desde `ventas_jugos`. La forma de hacerlo es empleando los siguientes comandos:
+
+```SQL
+USE ventas_jugos;
+SELECT * FROM jugos_ventas.tabla_de_productos;
+```
+
+14. La siguiente consulta, muestra la lista de productos, en la tabla `tabla_de_productos`, de la base `jugos_ventas` los cuales aún no fueron incluidos en tb_productos, de la base `ventas_jugos`:
+
+```SQL
+SELECT CODIGO_DEL_PRODUCTO AS CODIGO, NOMBRE_DEL_PRODUCTO AS DESCRIPCION,
+SABOR, TAMANO, ENVASE, PRECIO_DE_LISTA AS PRECIO_LISTA 
+FROM jugos_ventas.tabla_de_productos
+WHERE CODIGO_DEL_PRODUCTO NOT IN (SELECT CODIGO FROM tb_producto);
+```
+
+15. Con ayuda del comando INSERT podemos incluir los productos desde la tabla `jugos_ventas.tabla_de_productos` hacia la tabla `ventas_jugos.tb_producto`. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_producto
+SELECT CODIGO_DEL_PRODUCTO AS CODIGO, NOMBRE_DEL_PRODUCTO AS DESCRIPCION,
+SABOR, TAMANO, ENVASE, PRECIO_DE_LISTA AS PRECIO_LISTA 
+FROM jugos_ventas.tabla_de_productos
+WHERE CODIGO_DEL_PRODUCTO NOT IN (SELECT CODIGO FROM tb_producto);
+```
+
+16. Vamos a confirmar el contenido de tb_producto. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_producto;
+```
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/03/19.png)
+
+17. Ahora, vamos a incluir clientes en la tabla `tb_cliente`. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_cliente;
+```
+
+¿Cuántos clientes hay en la tabla?
+
+18. Al lado derecho de donde aparece la tabla aparece el botón **Form Editor**. Allí tendremos un formulario para editar la tabla de clientes:
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/03/20.png)
+
+19. Incluye un nuevo cliente:
+
+DNI: 1471156710; NOMBRE: Erica Carvajo; DIRECCION: Heriberto Frías 1107; BARRIO: Del Valle; CIUDAD: Ciudad de Mexico; ESTADO: EM; CP: 80012212; FECHA_NACIMIENTO: 1990-03-01; IDADE: 30; SEXO: F; LIMITE_CREDITO: 170000; VOLUME_COMPRA: 24500; PRIMEIRA_COMPRA: 1;
+
+20. Confirma su inclusión haciendo clic sobre apply.
+
+21. Ejecuta la consulta nuevamente. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_cliente;
+```
+
+¿El cliente fue incluido?
+
+22. Vamos a incluir a los clientes usando como fuente nuestra otra base de datos. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_cliente
+SELECT DNI, NOMBRE, DIRECCION_1 AS DIRECCION,
+BARRIO, CIUDAD, ESTADO, CP, FECHA_DE_NACIMIENTO 
+AS FECHA_NACIMIENTO, EDAD, SEXO, LIMITE_DE_CREDITO
+AS LIMITE_CREDITO, VOLUMEN_DE_COMPRA AS VOLUMEN_COMPRA,
+PRIMERA_COMPRA FROM jugos_ventas.tabla_de_clientes
+WHERE DNI NOT IN (SELECT DNI FROM tb_cliente);
+```
+
+23. Verfica el contenido de tb_cliente:
+
+```SQL
+SELECT * FROM tb_cliente;
+```
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/03/21.png)
+
+24. Vamos a mostrar ahora como incluir datos en la tabla `tb_vendedor` através de archivos externos. En los archivos que descargaste al preparar el ambiente, aparece dentro de la carpeta RecuperacionAmbiente un archivo llamado `vendedores.csv`.
+
+25. Haz clic con el botón derecho del mouse sobre la tabla `tb_vendedor` y escoge la opción **Table Data Import Wizard**.
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/03/22.png)
+
+26. En File Path selecciona el archivo vendedores.csv.
+
+27. Mantenga los datos por defecto.
+
+28. Pueden existir problemas entre computadores y entre los archivos descargados. Debes ver la combinación correta entre el formato del archivo (Que puede ser modificado en el NOTEPAD clásico) y en el cuadro de diálogo de importación de datos.
+
+![](https://caelum-online-public.s3.amazonaws.com/1831-php-bdd/03/8.png)
+
+29. Desmarca la opción VACACIONES:
+
+30. Clic en Next varias veces hasta que los datos sean incluidos en `tb_vendedor`.
+
+31. Verifica el contenido de la tabla `tb_vendedor`:
+
+```SQL
+SELECT * FROM tb_vendedor;
+```
+¿Cuántos vendedores quedaron registrados en la tabla?
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Aprendimos a incluir datos en una tabla, a través de comandos;
+- Vimos la inclusión de varios registros en un único comando;
+- Fue mostrado cómo incluir datos en la tabla a través de un asistente;
+- Mostramos cómo incluir datos usando un archivo externo.
+
+### Proyecto del aula anterior
+
+¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-4/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-4.zip "aquí") para descargarlos directamente.
