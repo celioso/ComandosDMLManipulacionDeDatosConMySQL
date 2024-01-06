@@ -13,6 +13,8 @@ VALUES
 "2015-06-14",
 0);
 
+SELECT * FROM tb_vendedor;
+
 START TRANSACTION;
 
 INSERT INTO `ventas_jugos`.`tb_vendedor`
@@ -37,8 +39,6 @@ VALUES
 0);
 
 UPDATE tb_vendedor SET COMISION = COMISION*1.05;
-
-SELECT * FROM tb_vendedor;
 
 ROLLBACK;
 

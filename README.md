@@ -892,3 +892,22 @@ Lo que aprendimos en esta aula:
 ¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-5/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-5.zip "aquí") para descargarlos directamente.
+
+### Valor de la secuencia
+
+¿Cuál será el valor final de la secuencia tras la ejecución de los siguientes comandos?
+
+```SQL
+CREATE TABLE TAB_IDENTITY2 (ID INT AUTO_INCREMENT, DESCRIPTOR VARCHAR(20), PRIMARY KEY(ID));
+INSERT INTO TAB_IDENTITY2 (DESCRIPTOR) VALUES ('CLIENTE1');
+INSERT INTO TAB_IDENTITY2 (DESCRIPTOR) VALUES ('CLIENTE2');
+INSERT INTO TAB_IDENTITY2 (DESCRIPTOR) VALUES ('CLIENTE3');
+INSERT INTO TAB_IDENTITY2 (ID, DESCRIPTOR) VALUES (NULL, 'CLIENTE4');
+DELETE FROM TAB_IDENTITY2 WHERE ID = 3;
+INSERT INTO TAB_IDENTITY2 (ID, DESCRIPTOR) VALUES (NULL, 'CLIENTE6');
+INSERT INTO TAB_IDENTITY2 (ID, DESCRIPTOR) VALUES (NULL, 'CLIENTE7');
+DELETE FROM TAB_IDENTITY2 WHERE ID = 2;
+```
+
+El valor final de la secuencia será 6.
+
