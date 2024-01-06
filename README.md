@@ -582,3 +582,313 @@ Lo que aprendimos en esta aula:
 ¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
 
 [Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-4/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-4.zip "aquí") para descargarlos directamente.
+
+### Alterando datos en la tabla de clientes
+
+Actualiza la dirección del cliente con el DNI 5840119709 Colocando como nueva dirección Jorge Emilio 23, barrio San Antonio, ciudad Guadalajara, Estado de Jalisco y el CP 44700000.
+
+```SQL
+UPDATE tb_clientes SET 
+DIRECCION = 'Jorge Emilio 23',
+BARRIO = 'San Antonio',
+CIUDAD = 'Guadalajara',
+ESTADO = 'JC',
+CEP = '44700000'
+WHERE DNI = '5840119709'
+```
+
+### Modificando el volumen de compra
+
+Podemos observar que los vendedores se encuentran en barrios asociados a ellos. Vamos a aumentar en 30% el volumen de compra de los clientes que tienen, en sus direcciones, barrios donde los vendedores cuentan con oficinas.
+
+Tip: Vamos a usar un UPDATE con FROM apoyándonos con el siguiente INNER JOIN:
+
+```SQL
+SELECT A.DNI FROM tb_clientes A
+INNER JOIN tb_vendedor B
+ON A.BARRIO = B.BARRIO
+```
+
+```SQL
+UPDATE tb_clientes A 
+INNER JOIN 
+tb_vendedor B
+ON A.BARRIO = B.BARRIO
+SET A.VOLUMEN_COMPRA = A.VOLUMEN_COMPRA * 1.3
+```
+
+### Excluyendo facturas
+
+Vamos a excluir las facturas (Apenas el encabezado) cuyos clientes tengan menos de 18 años.
+
+Tip: Usaremos la siguiente consulta:
+
+```SQL
+SELECT A.DNI FROM tb_clientes A
+INNER JOIN tb_vendedor B
+ON A.BARRIO = B.BARRIO
+```
+
+Puedes usar una sintaxis semejante a la usada en UPDATE con FROM.
+
+```SQL
+DELETE A FROM tb_facturas A
+INNER JOIN 
+tb_clientes B 
+ON A.DNI = B.DNI
+WHERE B.EDAD < 18;
+```
+
+### Haga lo que hicimos en aula
+
+Llegó la hora de que sigas todos los pasos realizados por mí durante esta aula. En caso de que ya lo hayas hecho, excelente. Si aún no lo hiciste, es importante que ejecutes lo que fue visto en los videos para poder continuar con la siguiente aula.
+
+1. Vamos a verificar la tabla `tb_producto`.
+
+```SQL
+SELECT * FROM tb_producto;
+```
+
+2. Vamos a alterar el precio de lista de uno de los productos:
+
+```SQL
+UPDATE tb_producto SET PRECIO_LISTA= 5 WHERE CODIGO = '1000889';
+```
+
+3. Podemos alterar los datos de la tabla en forma de lote. Digita y ejecuta:
+
+```SQL
+UPDATE tb_producto SET DESCRIPCION= 'Sabor de la Montaña',
+TAMANO= '1 Litro', ENVASE = 'Botella PET' WHERE 
+CODIGO = '1000889';
+```
+
+4. También podemos alterar algún campo basados en el mismo campo que será alterado. Digita e ejecuta:
+
+```SQL
+SELECT * FROM tb_cliente;
+UPDATE tb_cliente SET VOLUMEN_COMPRA = VOLUMEN_COMPRA/10;
+```
+
+5. Al igual que incluimos datos en la tabla basados en los datos de otra tabla, podemos también alterar datos de esta misma manera. Digita e ejecuta:
+
+```SQL
+USE ventas_jugos;
+
+UPDATE tb_vendedor A
+INNER JOIN
+jugos_ventas.tabla_de_vendedores B
+ON A.MATRICULA = SUBSTRING(B.MATRICULA,3,3)
+SET A.DE_VACACIONES = B.VACACIONES;
+```
+
+6. Es posible eliminar datos de la tabla. Antes de ello vamos a incluir nuevos registros que después serán excluidos. Digita e ejecuta:
+
+```SQL
+INSERT INTO tb_producto (CODIGO,DESCRIPCION,SABOR,TAMANO,ENVASE,PRECIO_LISTA) 
+VALUES ('1001001','Sabor Alpino','Mango','700 ml','Botella',7.50),
+         ('1001000','Sabor Alpino','Melón','700 ml','Botella',7.50),
+         ('1001002','Sabor Alpino','Guanábana','700 ml','Botella',7.50),
+         ('1001003','Sabor Alpino','Mandarina','700 ml','Botella',7.50),
+         ('1001004','Sabor Alpino','Banana','700 ml','Botella',7.50),
+         ('1001005','Sabor Alpino','Asaí','700 ml','Botella',7.50),
+         ('1001006','Sabor Alpino','Mango','1 Litro','Botella',7.50),
+         ('1001007','Sabor Alpino','Melón','1 Litro','Botella',7.50),
+         ('1001008','Sabor Alpino','Guanábana','1 Litro','Botella',7.50),
+         ('1001009','Sabor Alpino','Mandarina','1 Litro','Botella',7.50),
+         ('1001010','Sabor Alpino','Banana','1 Litro','Botella',7.50),
+         ('1001011','Sabor Alpino','Asaí','1 Litro','Botella',7.50);
+```
+
+7. Vamos a eliminar solamente un registro. Digita e ejecuta:
+
+```SQL
+DELETE FROM tb_producto WHERE CODIGO = '1001000';
+```
+
+8. Podemos aplicar un filtro para seleccionar datos que serán excluidos. Digita e ejecuta:
+
+```SQL
+DELETE FROM tb_producto WHERE TAMANO = '1 Litro';
+```
+
+9. Otra forma es eliminar usando la selección de datos de otra tabla. Digita e ejecuta:
+
+```SQL
+DELETE FROM tb_producto
+WHERE CODIGO NOT IN (SELECT CODIGO_DEL_PRODUCTO 
+FROM jugos_ventas.tabla_de_productos);
+```
+
+10. Los comandos UPDATE y DELETE pueden ser ejecutados sobre toda la tabla. Vamos entonces a crear una tabla de forma temporal para después alterarla y eliminarla. Digita y ejecuta:
+
+```SQL
+CREATE TABLE `tb_producto2` (
+  `CODIGO` varchar(10) NOT NULL,
+  `DESCRIPCION` varchar(100) DEFAULT NULL,
+  `SABOR` varchar(50) DEFAULT NULL,
+  `TAMANO` varchar(50) DEFAULT NULL,
+  `ENVASE` varchar(50) DEFAULT NULL,
+  `PRECIO_LISTA` float DEFAULT NULL,
+  PRIMARY KEY (`CODIGO`)
+);
+```
+
+11. Después, vamos a incluir datos en nuestra tabla tb_producto2:
+
+```SQL
+INSERT INTO tb_producto2
+SELECT * FROM tb_producto;
+```
+
+12. Altera los datos para toda la tabla:
+
+```SQL
+UPDATE tb_producto2 SET PRECIO_LISTA = PRECIO_LISTA* 1.15;
+```
+
+13. El siguiente comando elimina todos los registros de la tabla. Digita el siguiente comando e ejecútalo para eliminar todos los datos de la tabla:
+
+```SQL
+DELETE FROM tb_producto2;
+```
+
+14. Vamos a iniciar una transacción. Digita el siguiente comando e ejecútalo para crear una transacción:
+
+```SQL
+START TRANSACTION;
+```
+
+15. Vamos a insertar 3 registros en la tb_vendedor:
+
+```SQL
+INSERT INTO `ventas_jugos`.`tb_vendedor`
+(`MATRICULA`,
+`NOMBRE`,
+`BARRIO`,
+`COMISION`,
+`FECHA_ADMISION`,
+`DE_VACACIONES`)
+VALUES
+('256',
+'Fernando Ruiz',
+'Oblatos',
+0.1,
+'2015-06-14',
+0);
+INSERT INTO `ventas_jugos`.`tb_vendedor`
+(`MATRICULA`,
+`NOMBRE`,
+`BARRIO`,
+`COMISION`,
+`FECHA_ADMISION`,
+`DE_VACACIONES`)
+VALUES
+('257',
+'Fernando Rojas',
+'Oblatos',
+0.1,
+'2015-06-14',
+0);
+
+INSERT INTO `ventas_jugos`.`tb_vendedor`
+(`MATRICULA`,
+`NOMBRE`,
+`BARRIO`,
+`COMISION`,
+`FECHA_ADMISION`,
+`DE_VACACIONES`)
+VALUES
+('258',
+'David Rojas',
+'Del Valle',
+0.15,
+'2015-06-14',
+0);
+```
+
+16. Modifica los datos referentes a la comisión. Digita y ejecuta:
+
+```SQL
+UPDATE tb_vendedor SET COMISION = COMISION * 1.05;
+```
+
+17. Vamos a rechazar los anteriores comandos. Digita y ejecuta:
+
+```SQL
+ROLLBACK;
+```
+
+18. Verifica la tabla. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_vendedores;
+```
+
+¿Cuántos vendedores hay en tu tabla?
+
+19. Vamos a repetir la modificación iniciando una nueva transacción. Digita y ejecuta:
+
+```SQL
+START TRANSACTION;
+
+INSERT INTO `ventas_jugos`.`tb_vendedor`
+(`MATRICULA`,
+`NOMBRE`,
+`BARRIO`,
+`COMISION`,
+`FECHA_ADMISION`,
+`DE_VACACIONES`)
+VALUES
+('257',
+'Fernando Rojas',
+'Oblatos',
+0.1,
+'2015-06-14',
+0);
+
+INSERT INTO `ventas_jugos`.`tb_vendedor`
+(`MATRICULA`,
+`NOMBRE`,
+`BARRIO`,
+`COMISION`,
+`FECHA_ADMISION`,
+`DE_VACACIONES`)
+VALUES
+('258',
+'David Rojas',
+'Del Valle',
+0.15,
+'2015-06-14',
+0);
+
+UPDATE tb_vendedor SET COMISION = COMISION * 1.05;
+
+SELECT * FROM tb_vendedor;
+```
+
+20. Ahora, confirmaremos la inclusión de estos datos. Para ello digita:
+
+```SQL
+COMMIT;
+```
+
+21. Verifica nuevamente la tabla. Para ello digita:
+
+```SQL
+SELECT * FROM tb_vendedor;
+```
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- A alterar y a excluir datos de una tabla, a través de comando o en lotes;
+- Vimos que podemos alterar o excluir todos los datos de una tabla;
+- Lo que es una transacción y como podemos deshacer modificaciones efectuadas anteriormente en la base de datos.
+
+### Proyecto del aula anterior
+
+¿Comenzando en esta etapa? Aquí puedes descargar los archivos del proyecto que hemos avanzado hasta el aula anterior.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/aula-5/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/aula-5.zip "aquí") para descargarlos directamente.
