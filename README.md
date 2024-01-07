@@ -911,3 +911,21 @@ DELETE FROM TAB_IDENTITY2 WHERE ID = 2;
 
 El valor final de la secuencia será 6.
 
+### Calculando la edad del cliente
+
+El siguiente comando SQL calcula la edad actual del cliente:
+
+```SQL
+SELECT DNI, EDAD, FECHA_NACIMIENTO, timestampdiff(YEAR, FECHA_NACIMIENTO, NOW()) AS ANOS FROM tb_clientes;
+```
+
+Construye un TRIGGER (Lo llamaremos TG_EDAD_CLIENTES_INSERT) que actualiza las edades de los clientes, en la tabla de clientes, siempre que la tabla sufra una inclusión.
+
+```SQL
+DELIMITER //
+CREATE TRIGGER TG_EDAD_CLIENTES_INSERT 
+BEFORE INSERT ON tb_clientes
+FOR EACH ROW BEGIN
+SET NEW.EDAD = timestampdiff(YEAR, NEW.FECHA_NACIMIENTO, NOW());
+END//
+```
