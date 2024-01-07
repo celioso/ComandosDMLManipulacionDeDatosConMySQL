@@ -929,3 +929,276 @@ FOR EACH ROW BEGIN
 SET NEW.EDAD = timestampdiff(YEAR, NEW.FECHA_NACIMIENTO, NOW());
 END//
 ```
+
+### Haga lo que hicimos en aula
+
+Llegó la hora de que sigas todos los pasos realizados por mí durante esta aula. En caso de que ya lo hayas hecho, excelente. Si aún no lo hiciste, es importante que ejecutes lo que fue visto en los videos para poder continuar con la siguiente aula.
+
+1. El campo de tipo autoincremento crea una secuencia numérica de números enteros en un campo. Para definir este campo necesitamos configurarlo en la creación de la tabla. Luego, digita y ejecuta el siguiente comando:
+
+```SQL
+CREATE TABLE tb_identificacion(
+ID INT AUTO_INCREMENT NOT NULL,
+DESCRIPCION VARCHAR(50) NULL,
+PRIMARY KEY(ID)
+);
+```
+
+2. Para insertar un registro no necesitamos hacer referencia al campo autoincremento en el comando INSERT. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente A');
+```
+
+3. Verifica el contenido de la tabla. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_identificacion;
+```
+
+¿Qué sucedió con el campo ID?
+
+4. A continuación veremos nuevas formas de insertar nuevos registros. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente B');
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente C');
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente D');
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente E');
+INSERT INTO tb_identificacion(DESCRIPCION)
+VALUES ('Cliente F');
+```
+
+5. Verifica el contenido de la tabla. Digita y ejecuta:
+
+```SQL
+SELECT * FROM tb_identificacion;
+```
+
+6. Al eliminar un registro no interrumpimos la secuencia del contador. Observa también que, si deseamos mantener el campo autoincremento en el comando INSERT tendremos que referenciarlo como NULL para no interrumpir la secuencia. Digita y ejecuta:
+
+```SQL
+DELETE FROM tb_identificacion WHERE ID= 6;
+INSERT INTO tb_identificacion(ID, DESCRIPCION)
+VALUES (100, 'Cliente G');
+INSERT INTO tb_identificacion(ID, DESCRIPCION)
+VALUES (NULL, 'Cliente I');
+```
+
+7. Podemos definir patrones para los campos. Con ello un campo puede tener un valor DEFAULT en caso que no sea referenciado en el comando INSERT. Digita y ejecuta:
+
+```SQL
+CREATE TABLE tb_default(
+ID INT AUTO_INCREMENT,
+DESCRIPCION VARCHAR(50) NOT NULL,
+DIRECCION VARCHAR(100) NULL,
+CIUDAD VARCHAR(50) DEFAULT 'Monterrey',
+FECHA_CREACION TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+PRIMARY KEY(ID)
+);
+```
+
+8. Fueron creados valores DEFAULT para CIUDAD y FECHA_CREACION. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_default 
+(DESCRIPCION, DIRECCION, CIUDAD, FECHA_CREACION)
+VALUES ('Cliente X', 'Calle Sol, 525', 'Cancún', '2021-01-01');
+
+SELECT * FROM tb_default;
+```
+
+Aquí, el comando INSERT funciona normalmente porque todos los campos fueron referenciados.
+
+9. Vamos a repetir el comando INSERT, pero ahora usando solamente los campos que no poseen estándares. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_default 
+(DESCRIPCION)
+VALUES ('Cliente Y');
+```
+
+¿Cómo aparece tu tabla `tb_default`?
+
+10. Vamos a crear una tabla auxiliar que tendrá siempre la facturación consolidada por fecha de la venta. Ejecuta el comando:
+
+```SQL
+CREATE TABLE tb_facturacion(
+FECHA DATE NULL,
+VENTA_TOTAL FLOAT
+);
+```
+
+11. El objetivo es que, en cada inclusión de datos en las tablas `tb_factura1` e `tb_items_facturas1` el valor de `tb_facturacion` sea actualizado. Para ello, vamos a crear estas 2 tablas e insertar datos en ellas. Digita y ejecuta:
+
+```SQL
+CREATE TABLE `tb_factura1` (
+  `NUMERO` varchar(5) NOT NULL,
+  `FECHA` date DEFAULT NULL,
+  `DNI` varchar(11) NOT NULL,
+  `MATRICULA` varchar(5) NOT NULL,
+  `IMPUESTO` float DEFAULT NULL,
+  PRIMARY KEY (`NUMERO`),
+  KEY `FK_CLIENTE1` (`DNI`),
+  KEY `FK_VENDEDOR1` (`MATRICULA`),
+  CONSTRAINT `FK_CLIENTE1` FOREIGN KEY (`DNI`) REFERENCES `tb_cliente` (`DNI`),
+  CONSTRAINT `FK_VENDEDOR1` FOREIGN KEY (`MATRICULA`) REFERENCES `tb_vendedor` (`MATRICULA`)
+) ;
+
+CREATE TABLE `tb_items_facturas1` (
+  `NUMERO` varchar(5) NOT NULL,
+  `CODIGO` varchar(10) NOT NULL,
+  `CANTIDAD` int DEFAULT NULL,
+  `PRECIO` float DEFAULT NULL,
+  PRIMARY KEY (`NUMERO`,`CODIGO`),
+  KEY `FK_PRODUCTO1` (`CODIGO`),
+  CONSTRAINT `FK_FACTURA1` FOREIGN KEY (`NUMERO`) REFERENCES `tb_factura` (`NUMERO`),
+  CONSTRAINT `FK_PRODUCTO1` FOREIGN KEY (`CODIGO`) REFERENCES `tb_producto` (`CODIGO`)
+) ;
+
+INSERT INTO tb_factura1 
+VALUES('0100', '2021-01-01', '1471156710', '235', 0.10 );
+INSERT INTO tb_items_facturas1
+VALUES('0100', '1002767', 100, 25),
+('0100', '1004327', 200, 25),
+('0100', '1013793', 300, 25);
+```
+
+12. Para obtener la facturación, tenemos que ejecutar el siguiente comando:
+
+```SQL
+SELECT A.FECHA, SUM(B.CANTIDAD * B.PRECIO) AS VENTA_TOTAL
+FROM tb_factura1 A
+INNER JOIN
+tb_items_facturas1 B
+ON A.NUMERO = B.NUMERO
+GROUP BY A.FECHA;
+```
+
+13) Si queremos mantener la facturación actualizada tenemos que **repetir siempre el cálculo actual del valor total de las ventas** ya que nuevos registros fueron incluidos. Digita y ejecuta:
+
+```SQL
+INSERT INTO tb_factura1 
+VALUES('0101', '2021-01-01', '1471156710', '235', 0.10 );
+INSERT INTO tb_items_facturas1
+VALUES('0101', '1002767', 100, 25),
+('0101', '1004327', 200, 25),
+('0101', '1013793', 300, 25);
+
+INSERT INTO tb_factura1 
+VALUES('0102', '2021-01-01', '1471156710', '235', 0.10 );
+INSERT INTO tb_items_facturas1
+VALUES('0102', '1002767', 200, 25),
+('0102', '1004327', 300, 25),
+('0102', '1013793', 400, 25);
+
+SELECT A.FECHA, SUM(B.CANTIDAD * B.PRECIO) AS VENTA_TOTAL
+FROM tb_factura1 A
+INNER JOIN
+tb_items_facturas1 B
+ON A.NUMERO = B.NUMERO
+GROUP BY A.FECHA;
+```
+
+¿A cuánto aumentó el valor de la facturación con las nuevas inserciones de datos?
+
+14. Podemos crear un TRIGGER para que la tabla `tb_facturacion` sea recalculada siempre que un nuevo registro sea incluido en la tabla de `tb_items_facturas1`. De esta manera, digita y ejecuta:
+
+```SQL
+DELIMITER //
+CREATE TRIGGER TG_FACTURACION_INSERT 
+AFTER INSERT ON tb_items_facturas1
+FOR EACH ROW BEGIN
+  DELETE FROM tb_facturacion;
+  INSERT INTO tb_facturacion
+  SELECT A.FECHA, SUM(B.CANTIDAD * B.PRECIO) AS VENTA_TOTAL
+  FROM tb_factura1 A
+  INNER JOIN
+  tb_items_facturas1 B
+  ON A.NUMERO = B.NUMERO
+  GROUP BY A.FECHA;
+END //
+```
+
+15. Al insertar nuevos registros no es preciso ejecutar el cálculo de la tabla consolidada. Para ello digita y ejecuta:
+
+```SQL
+INSERT INTO tb_factura1 
+VALUES('0103', '2021-01-01', '1471156710', '235', 0.10 );
+INSERT INTO tb_items_facturas1
+VALUES('0103', '1002767', 200, 25),
+('0103', '1004327', 300, 25),
+('0103', '1013793', 400, 25);
+
+SELECT * FROM tb_facturacion;
+
+INSERT INTO tb_factura1 
+VALUES('0104', '2021-01-01', '1471156710', '235', 0.10 );
+INSERT INTO tb_items_facturas1
+VALUES('0104', '1002767', 200, 25),
+('0104', '1004327', 400, 30),
+('0104', '1013793', 500, 25);
+
+SELECT * FROM tb_facturacion;
+```
+
+16. Sin embargo, fue creado un TRIGGER sólo para la inclusión de registros en una tabla. Vamos a añadir TRIGGERs para la actualización y exclusión de datos. Para ello digita y ejecuta:
+
+```SQL
+DELIMITER //
+CREATE TRIGGER TG_FACTURACION_DELETE
+AFTER DELETE ON tb_items_facturas1
+FOR EACH ROW BEGIN
+  DELETE FROM tb_facturacion;
+  INSERT INTO tb_facturacion
+  SELECT A.FECHA, SUM(B.CANTIDAD * B.PRECIO) AS VENTA_TOTAL
+  FROM tb_factura1 A
+  INNER JOIN
+  tb_items_facturas1 B
+  ON A.NUMERO = B.NUMERO
+  GROUP BY A.FECHA;
+END //
+
+DELIMITER //
+CREATE TRIGGER TG_FACTURACION_UPDATE
+AFTER UPDATE ON tb_items_facturas1
+FOR EACH ROW BEGIN
+  DELETE FROM tb_facturacion;
+  INSERT INTO tb_facturacion
+  SELECT A.FECHA, SUM(B.CANTIDAD * B.PRECIO) AS VENTA_TOTAL
+  FROM tb_factura1 A
+  INNER JOIN
+  tb_items_facturas1 B
+  ON A.NUMERO = B.NUMERO
+  GROUP BY A.FECHA;
+END //
+```
+
+17. Vamos a alterar/excluir algunos registros. Para ello digita y ejecuta:
+
+```SQL
+UPDATE tb_items_facturas1 SET CANTIDAD = 800
+WHERE NUMERO = '0101' AND CODIGO = '1002767';
+
+DELETE FROM tb_items_facturas1
+WHERE NUMERO = '0104' AND CODIGO = '1013793'; 
+```
+
+### Proyecto final
+
+Aquí puedes descargar los archivos del proyecto completo.
+
+[Descargue los archivos en Github](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/blob/proyecto-final/comandos.sql "Descargue los archivos en Github") o haga clic [aquí](https://github.com/alura-es-cursos/1831-comandos-dml-manipulacion-de-datos-con-mysql/archive/refs/heads/proyecto-final.zip "aquí") para descargarlos directamente.
+
+### Lo que aprendimos
+
+Lo que aprendimos en esta aula:
+
+- Vimos cómo funcionan los campos de autoincremento;
+- Aprendimos a determinar valores por defecto para los campos;
+- Fue mostrado cómo trabajar con TRIGGERs para ejecutar comandos al momento de la inclusión, modificación y exclusión de registros.
